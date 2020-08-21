@@ -4,6 +4,7 @@ import { AppLoading } from 'expo';
 import * as Font from 'expo-font';
 import { Asset } from 'expo-asset';
 import { Block, GalioProvider } from 'galio-framework';
+import { NavigationContainer } from '@react-navigation/native';
 
 import Screens from './navigation/Screens';
 import { Images, articles, nowTheme } from './constants';
@@ -42,14 +43,14 @@ export default class App extends React.Component {
     fontLoaded: false
   };
 
-  async componentDidMount() {
-    Font.loadAsync({
-      'montserrat-regular': require('./assets/font/Montserrat-Regular.ttf'),
-      'montserrat-bold': require('./assets/font/Montserrat-Bold.ttf')
-    });
+  // async componentDidMount() {
+  //   Font.loadAsync({
+  //     'montserrat-regular': require('./assets/font/Montserrat-Regular.ttf'),
+  //     'montserrat-bold': require('./assets/font/Montserrat-Bold.ttf')
+  //   });
 
-    this.setState({ fontLoaded: true });
-  }
+  //   this.setState({ fontLoaded: true });
+  // }
 
   render() {
     if (!this.state.isLoadingComplete) {
@@ -62,16 +63,24 @@ export default class App extends React.Component {
       );
     } else {
       return (
-        <GalioProvider theme={nowTheme}>
-          <Block flex>
-            <Screens />
-          </Block>
-        </GalioProvider>
+        <NavigationContainer>
+          <GalioProvider theme={nowTheme}>
+            <Block flex>
+              <Screens />
+            </Block>
+          </GalioProvider>
+        </NavigationContainer>
       );
     }
   }
 
   _loadResourcesAsync = async () => {
+    await Font.loadAsync({
+      'montserrat-regular': require('./assets/font/Montserrat-Regular.ttf'),
+      'montserrat-bold': require('./assets/font/Montserrat-Bold.ttf')
+    });
+
+    this.setState({ fontLoaded: true });
     return Promise.all([...cacheImages(assetImages)]);
   };
 
